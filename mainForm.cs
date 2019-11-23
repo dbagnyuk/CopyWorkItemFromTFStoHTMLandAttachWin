@@ -13,7 +13,10 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
         private void mainForm_Load(object sender, EventArgs e)
         {
             if (!Config.readConfigFile(Program.configFile, ref Config.config))
+            {
+                MessageBox.Show("You need to create config first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 configToolStripMenuItem_Click(sender, e);
+            }
 
             // Creating and setting the 
             // properties of the ToolTip 
