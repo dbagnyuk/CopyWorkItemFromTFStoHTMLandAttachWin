@@ -54,13 +54,21 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
                 password = String.Empty;
             }
 
-            // Get the bytes of the string
-            var bytesToBeDecrypted = Convert.FromBase64String(encryptedText);
-            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] bytesDecrypted = null;
+            try
+            {
+                // Get the bytes of the string
+                var bytesToBeDecrypted = Convert.FromBase64String(encryptedText);
+                var passwordBytes = Encoding.UTF8.GetBytes(password);
 
-            passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
+                passwordBytes = SHA256.Create().ComputeHash(passwordBytes);
 
-            var bytesDecrypted = Cipher.Decrypt(bytesToBeDecrypted, passwordBytes);
+                bytesDecrypted = Cipher.Decrypt(bytesToBeDecrypted, passwordBytes);
+            }
+            catch (Exception ex)
+            {
+                Program.exExit(ex);
+            }
 
             return Encoding.UTF8.GetString(bytesDecrypted);
         }
