@@ -33,6 +33,7 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             {
                 Program.exExit(ex);
             }
+
             // chek config if it has less or more than 3 string
             if (config.Length != 3)
                 return false;
@@ -41,6 +42,9 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             foreach (var s in config)
                 if (s.Length == 0)
                     return false;
+
+            if (Cipher.Decrypt(Config.config[1], Program.Key) == "$$$")
+                return false;
 
             return true;
         }

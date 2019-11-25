@@ -14,8 +14,8 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
         {
             if (!Config.readConfigFile(Program.configFile, ref Config.config))
             {
-                MessageBox.Show("You need to create config first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                configToolStripMenuItem_Click(sender, e);
+                MessageBox.Show("You need to create/edit config first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                configToolStripMenuItem_Click((object)sender, (EventArgs)e);
             }
 
             // Creating and setting the 
@@ -67,9 +67,10 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
         private void aboutStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-             MessageBox.Show("Application for remote saving TFS Item information into HTML file,\n"
+             MessageBox.Show("TFStoHTMLandAttach v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version + "\n\n"
+                          + "Application for remote saving TFS Item information into HTML file,\n"
                           + "and download Attachments from the TFS Item into the selected folder.\n\n"
-                          + "by Dim@", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                          + "Copyright © Dim@ 2019", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Enabled = true;
         }
 

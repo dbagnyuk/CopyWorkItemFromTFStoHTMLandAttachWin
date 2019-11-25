@@ -29,40 +29,31 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
 
         public static void connectToTFS ()
         {
-            // create the connection to the TFS server
-            NetworkCredential netCred = new NetworkCredential(DomainName, Password);
-            Microsoft.VisualStudio.Services.Common.WindowsCredential winCred = new Microsoft.VisualStudio.Services.Common.WindowsCredential(netCred);
-            VssCredentials vssCred = new VssCredentials(winCred);
-            TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri("https://tfs.mtsit.com/STS/"), vssCred);
-            tpc.Authenticate();
             // catch the authentication error
             try
             {
+                // create the connection to the TFS server
+                NetworkCredential netCred = new NetworkCredential(DomainName, Password);
+                Microsoft.VisualStudio.Services.Common.WindowsCredential winCred = new Microsoft.VisualStudio.Services.Common.WindowsCredential(netCred);
+                VssCredentials vssCred = new VssCredentials(winCred);
+                TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri("https://tfs.mtsit.com/STS/"), vssCred);
+
                 tpc.Authenticate();
-            }
-            catch (Exception ex)
-            {
-                Program.exExit(ex);
-            }
 
-            workItemStore = tpc.GetService<WorkItemStore>();
-
-            // catch not existed TFS id
-            try
-            {
+                workItemStore = tpc.GetService<WorkItemStore>();
                 workItem = workItemStore.GetWorkItem(Program.itemId);
+
+                // create web link for tfs id
+                tfsLink = tpc.Uri + workItem.AreaPath.Remove(workItem.AreaPath.IndexOf((char)92)) + "/_workitems/edit/";
+                // create path and name to html file
+                PathToHtml = PathToTasks + workItem.Type.Name + " " + workItem.Id + ".html";
+                // create path and folder name for attachments
+                PathToAttach = PathToTasks + workItem.Id;
             }
             catch (Exception ex)
             {
                 Program.exExit(ex);
             }
-
-            // create web link for tfs id
-            tfsLink = tpc.Uri + workItem.AreaPath.Remove(workItem.AreaPath.IndexOf((char)92)) + "/_workitems/edit/";
-            // create path and name to html file
-            PathToHtml = PathToTasks + workItem.Type.Name + " " + workItem.Id + ".html";
-            // create path and folder name for attachments
-            PathToAttach = PathToTasks + workItem.Id;
         }
 
         public static void writeTFStoHTML()
@@ -177,19 +168,19 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
 
         public static void downloadAttach()
         {
-            // if folder is not exists, create it
-            if (!Directory.Exists(PathToAttach))
-                Directory.CreateDirectory(PathToAttach);
-
-            // Get a WebClient object to do the attachment download
-            WebClient webClient = new WebClient()
-            {
-                UseDefaultCredentials = true
-            };
-
             // catch the error with download the attacments
             try
             {
+                // if folder is not exists, create it
+                if (!Directory.Exists(PathToAttach))
+                Directory.CreateDirectory(PathToAttach);
+
+                // Get a WebClient object to do the attachment download
+                WebClient webClient = new WebClient()
+                {
+                    UseDefaultCredentials = true
+                };
+
                 // Loop through each attachment in the work item.
                 foreach (Attachment attachment in workItem.Attachments)
                 {

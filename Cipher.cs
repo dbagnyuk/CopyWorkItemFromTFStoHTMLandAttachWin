@@ -67,7 +67,8 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             }
             catch (Exception ex)
             {
-                Program.exExit(ex);
+                //Program.exExit(ex);
+                return "$$$";
             }
 
             return Encoding.UTF8.GetString(bytesDecrypted);
