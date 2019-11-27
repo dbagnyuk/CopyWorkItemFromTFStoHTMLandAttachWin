@@ -37,6 +37,12 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
                 this.Enabled = false;
                 TFStoHTML.connectToTFS();
                 TFStoHTML.writeTFStoHTML();
+
+                // download the attachments from tfs item
+                if (Program.downConfirm)
+                    if (!TFStoHTML.downloadAttach())
+                        MessageBox.Show("For some reason, attachments cannot be downloaded!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 Cursor.Current = Cursors.Default;
                 this.Enabled = true;
             }

@@ -79,12 +79,12 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             // short info block: 'name', 'id', 'title', 'state' and 'assigned to' info of work item
             streamWriter.WriteLine(@"<p><font style=""background-color:rgb(255, 255, 255); color:rgb(0, 0, 0); font-family:Segoe UI; font-size:12px;"">"
                                    + workItem.Type.Name + " " + workItem.Id + ": " + workItem.Title
-                                   + @"</font><p>");
+                                   + @"</font></p>");
             streamWriter.WriteLine(@"<p style=""border: 1px solid; color: red; width: 50%;"">"
                                    + @"<font style=""background-color:rgb(255, 255, 255); color:rgb(0, 0, 0); font-family:Segoe UI; font-size:12px;"">"
                                    + workItem.Type.Name + " is <b>" + workItem.State
                                    + (workItem.State == "Closed" ? "</b>" : "</b> and Assigned To <b>" + workItem.Fields["Assigned To"].Value + "</b>")
-                                   + @"</font><p>");
+                                   + @"</font></p>");
             // blok 'title'
             streamWriter.WriteLine(@"<div style=""border: 1px solid black; background-color:lightgray;"">TITLE:</div>");
             streamWriter.WriteLine("<p>{0}</p>", workItem.Title);
@@ -133,7 +133,7 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             streamWriter.WriteLine(@"</table></p>");
             // block with the web link to the thin client on to work item
             streamWriter.WriteLine(@"<div style=""border: 1px solid black; background-color:lightgray;"">LINK:</div>");
-            streamWriter.WriteLine(@"<p><a href=""{0}{1}"">{0}{1}</a><p>", tfsLink, workItem.Id);
+            streamWriter.WriteLine(@"<p><a href=""{0}{1}"">{0}{1}</a></p>", tfsLink, workItem.Id);
 
             // create the path to directory for saving attachments and search if the dir alredy exist
             DirectoryInfo hdDirectoryInWhichToSearch = new DirectoryInfo(PathToTasks);
@@ -149,7 +149,7 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             {
                 // block with link to folder with attacments
                 streamWriter.WriteLine(@"<div style=""border: 1px solid black; background-color:lightgray;"">ATTACHMENTS:</div>");
-                streamWriter.WriteLine(@"<p><a href=""{0}"">{0}</a><p>", PathToAttach);
+                streamWriter.WriteLine(@"<p><a href=""{0}"">{0}</a></p>", PathToAttach);
             }
 
             streamWriter.WriteLine("{0}", "</body>");
@@ -158,15 +158,11 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             streamWriter.Close();
             fileStream.Close();
 
-            // download the attachments from tfs item
-            if (Program.downConfirm)
-                downloadAttach();
-
             // open the created html file, will be open by default app for html files
             System.Diagnostics.Process.Start(PathToHtml);
         }
 
-        public static void downloadAttach()
+        public static bool downloadAttach()
         {
             // catch the error with download the attacments
             try
@@ -192,8 +188,14 @@ namespace CopyWorkItemFromTFStoHTMLandAttachWin
             }
             catch (Exception ex)
             {
-                Program.exExit(ex);
+                //Program.exExit(ex);
+                return false;
             }
+
+            // open the folder with the attachments
+            System.Diagnostics.Process.Start(PathToAttach);
+
+            return true;
         }
     }
 }
